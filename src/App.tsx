@@ -5,6 +5,7 @@ import BottomNav from './components/BottomNav'
 import EstoqueScreen from './screens/EstoqueScreen'
 import PontoDeVendaScreen from './screens/PontoDeVendaScreen'
 import AgendaScreen from './screens/AgendaScreen'
+import NovoProdutoScreen from './screens/NovoProdutoScreen'
 
 const TITLES: Record<Screen, string> = {
   estoque: 'Estoque',
@@ -12,6 +13,7 @@ const TITLES: Record<Screen, string> = {
   agenda: 'Agenda',
   tarefas: 'Tarefas',
   relatorios: 'Relatórios',
+  novo_produto: 'Novo Produto',
 }
 
 export default function App() {
@@ -23,9 +25,10 @@ export default function App() {
         <TopBar title={TITLES[screen]} />
 
         <main className="flex-1 overflow-y-auto no-scrollbar bg-gray-50">
-          {screen === 'estoque' && <EstoqueScreen />}
+          {screen === 'estoque' && <EstoqueScreen onNavigate={() => setScreen('novo_produto')} />}
           {screen === 'vendas' && <PontoDeVendaScreen />}
           {screen === 'agenda' && <AgendaScreen />}
+          {screen === 'novo_produto' && <NovoProdutoScreen />}
           {screen === 'tarefas' && (
             <div className="flex flex-col items-center justify-center h-full gap-3 text-gray-300">
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">

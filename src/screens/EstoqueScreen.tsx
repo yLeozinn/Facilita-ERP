@@ -23,7 +23,7 @@ function fmt(n: number) {
   return `R$ ${n.toFixed(2).replace('.', ',')}`
 }
 
-export default function EstoqueScreen() {
+export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }) {
   const [search, setSearch] = useState('')
   const [products, setProducts] = useState(PRODUCTS)
 
@@ -60,7 +60,9 @@ export default function EstoqueScreen() {
           </svg>
           Filtros
         </button>
-        <button className="flex items-center gap-1.5 flex-1 justify-center py-2.5 text-sm font-bold text-white bg-blue-600 rounded-xl hover:bg-blue-700 active:bg-blue-800 transition-colors">
+        <button 
+         onClick={onNavigate}
+         className="flex items-center gap-1.5 flex-1 justify-center py-2.5 text-sm font-bold text-white bg-blue-600 rounded-xl hover:bg-blue-700 active:bg-blue-800 transition-colors">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />

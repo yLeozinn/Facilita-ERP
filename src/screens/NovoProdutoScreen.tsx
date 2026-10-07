@@ -23,12 +23,36 @@ export default function NovoProdutoScreen() {
           <input 
             type="text" 
             name="nome"
-            
             className="w-full h-12 px-4 bg-white border border-gray-200 rounded-xl text-base text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors disabled:bg-gray-50"
             placeholder="Ex: Piraquê Chocowafer 100,8 g"
             disabled={isPending}
             required
           />
+        </div>
+
+        <div className="flex gap-3">
+          <div className="flex-[3]">
+            <label className="block text-sm font-bold text-gray-700 mb-1.5 pl-1">Categoria</label>
+            <input
+              type="text"
+              name="category"
+              className="w-full h-12 px-4 bg-white border border-gray-200 rounded-xl text-base text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors disabled:bg-gray-50"
+              placeholder="Ex: Bebidas"
+              disabled={isPending}
+              required
+            />
+          </div>
+
+          <div className="flex-[4]">
+            <label className="block text-sm font-bold text=gray-700 mb-1.5 pl-1">Data de Validade</label>
+            <input
+              type="date"
+              name="expiry"
+              className="w-full h-12 px-4 bg-white border border-gray-200 rounded-xl text-base text-gray-800 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors disabled:bg-gray-50"
+              disabled={isPending}
+              required
+            />
+          </div>
         </div>
         
         <div className="flex gap-3">

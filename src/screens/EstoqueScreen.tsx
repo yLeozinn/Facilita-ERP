@@ -25,7 +25,32 @@ function fmt(n: number) {
 
 export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }) {
   const [search, setSearch] = useState('')
-  const [products, setProducts] = useState(PRODUCTS)
+  const [products, setProducts] = useState(() => {
+    const salvos = localStorage.getItem('facilita_produtos');
+    if (salvos) {
+      const produtosDoNavegador = JSON.parse(salvos);
+      return [...PRODUCTS, ...produtosDoNavegador];
+    }
+    return PRODUCTS;
+  });
+
+  // função que formata "aaaa-mm-dd" em "dd/mm/aaaa"
+  const formatarData = (data: string) => {
+    if(!data.includes('-')) return data;
+    const [ano, mes, dia] = data.split('-');
+    return `${dia}/${dia}/${dia}`
+  }
+
+  const handleDelete = (idParaExcluir: number) => {
+    const temCerteza = window.confirm('Tem certeza de que quer excluir esse produto? Essa ação não pode ser desfeita.');
+    if (temCerteza) {
+      setProducts((prev) => prev.filter((p) => p.id !== idParaExcluir));
+
+      const salvos = JSON.parse(localStorage.getItem('facilita-produtos') || '[]');
+      const novaLista = salvos.filter((p: Product) => p.id !== idParaExcluir);
+      localStorage.setItem('facilita_produtos', JSON.stringify(novaLista));
+    }
+  };
 
   const filtered = products.filter(
     (p) =>
@@ -100,7 +125,7 @@ export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }
                       </svg>
                     </button>
                     <button
-                      onClick={() => setProducts((prev) => prev.filter((x) => x.id !== product.id))}
+                      onClick={() => handleDelete(product.id)}
                       className="w-7 h-7 flex items-center justify-center rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
                     >
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -126,7 +151,7 @@ export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }
                   <span className="text-gray-200">·</span>
                   <span>
                     Val:{' '}
-                    <strong className="text-gray-600 font-semibold">{product.expiry}</strong>
+                    <strong className="text-gray-600 font-semibold">{formatarData(product.expiry)}</strong>
                   </span>
                 </div>
               </div>

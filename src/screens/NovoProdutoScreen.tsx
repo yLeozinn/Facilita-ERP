@@ -17,12 +17,11 @@ export default function NovoProdutoScreen() {
       )}
       
       <form action={actionFormulario} className="flex flex-col gap-5 pb-24">
-        
         <div>
           <label className="block text-sm font-bold text-gray-700 mb-1.5 pl-1">Nome do Produto</label>
           <input 
             type="text" 
-            name="nome"
+            name="name"
             className="w-full h-12 px-4 bg-white border border-gray-200 rounded-xl text-base text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors disabled:bg-gray-50"
             placeholder="Ex: Piraquê Chocowafer 100,8 g"
             disabled={isPending}
@@ -62,7 +61,7 @@ export default function NovoProdutoScreen() {
               type="number" 
               step="0.01"
               min="0.00"
-              name="preco"
+              name="price"
               className="w-full h-12 px-4 bg-white border border-gray-200 rounded-xl text-base text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors disabled:bg-gray-50"
               placeholder="0.00"
               disabled={isPending}
@@ -75,7 +74,7 @@ export default function NovoProdutoScreen() {
             <input 
               type="number" 
               min="0.00"
-              name="estoque"
+              name="quantity"
               className="w-full h-12 px-4 bg-white border border-gray-200 rounded-xl text-base text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors disabled:bg-gray-50"
               placeholder="0"
               disabled={isPending}
@@ -103,40 +102,5 @@ export default function NovoProdutoScreen() {
         </button>
       </form>
     </div>
-  );
-
-/*
-    return (
-        <div className="p-8 max-w-2xl mx-auto bg-white rounded-lg shadow-md mt-10">
-            <h1 className="text-2xl font-bold text-gray-800 mb-6">Cadastrar Novo Produto</h1>
-      
-      {estado.mensagem && (
-        <div className={`mb-4 p-3 rounded ${estado.sucesso ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-          {estado.mensagem}
-        </div>
-      )}
-      
-      <form action={actionFormulario} className="flex flex-col gap-5">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Nome do Produto</label>
-          <input 
-            type="text" 
-            name="nome"
-            className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:bg-gray-100"
-            disabled={isPending}
-            required
-          />
-        </div>
-
-        <button 
-          type="submit" 
-          disabled={isPending}
-          className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200 mt-4 disabled:bg-blue-400 disabled:cursor-not-allowed flex justify-center"
-        >
-          {isPending ? 'Salvando no banco...' : 'Salvar Produto'}
-        </button>
-      </form>
-    </div>
-    );
-*/       
+  );   
 }

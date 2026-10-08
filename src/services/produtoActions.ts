@@ -1,10 +1,10 @@
 export async function salvarProduto(estadoAnterior: any, formData: FormData) {
     
-    const nome = formData.get('nome')?.toString().trim() || '';
-    const categoriaBruta = formData.get('category')?.toString().trim() || '';
-    const validade = formData.get('expiry')?.toString().trim() || '';
-    const preco = parseFloat(formData.get('price')?.toString() || '0');
-    const estoque = parseInt(formData.get('quantity')?.toString() || '0', 10);
+    const nome = String(formData.get('name') || '').trim();
+    const categoriaBruta = String(formData.get('category') || '').trim();
+    const validade = String(formData.get('expiry') || '');
+    const preco = parseFloat(String(formData.get('price') || '0'));
+    const estoque = parseInt(String(formData.get('quantity') || '0'), 10);
 
     const categoriaNormal = categoriaBruta.toLowerCase();
 

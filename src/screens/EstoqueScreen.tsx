@@ -11,6 +11,7 @@ type Product = {
   strokeColor: string
 }
 
+// amostra de itens na tela de estoque, posteriormente será removido.
 const PRODUCTS: Product[] = [
   { id: 1, name: 'Suco de Laranja Natural', category: 'Bebidas', quantity: 48, expiry: '22/12/2026', price: 8.9, bgColor: '#FFF7ED', strokeColor: '#F97316' },
   { id: 2, name: 'Água Mineral 500ml', category: 'Bebidas', quantity: 120, expiry: '15/06/2027', price: 2.5, bgColor: '#EFF6FF', strokeColor: '#3B82F6' },
@@ -25,6 +26,47 @@ function fmt(n: number) {
 
 export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }) {
   const [search, setSearch] = useState('')
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+
+  const abrirEditor = (product: Product) => {
+    setEditingProduct(product);
+  };
+
+  const salvarEdicao = (formData: FormData) => {
+    if (!editingProduct) return;
+
+    const novoPreco = Number(formData.get('price'));
+    const qtdAdicional = Number(formData.get('addQty') || 0);
+    const novaValidade = String(formData.get('expiry'));
+
+    setProducts((prev) => prev.map((p) => {
+      if (p.id === editingProduct.id) {
+        return {
+          ...p,
+          price: novoPreco,
+          quantity: p.quantity + qtdAdicional,
+          expiry: novaValidade
+        };
+      }
+      return p;
+    }));
+
+    const salvos = JSON.parse(localStorage.getItem('facilita_produtos') || '[]');
+    const index = salvos.findIndex((p: Product) => p.id === editingProduct.id);
+    if (index >= 0) {
+      salvos[index].price = novoPreco;
+      salvos[index].quantity += qtdAdicional;
+      salvos[index].expiry = novaValidade;
+      localStorage.setItem('facilita_produtos', JSON.stringify(salvos));
+    }
+
+    setEditingProduct(null);
+  };
+
+  const validadeFixed = editingProduct
+    ? (editingProduct.expiry.includes('/') ? editingProduct.expiry.split('/').reverse().join('-') : editingProduct.expiry)
+    : '';
+
   const [products, setProducts] = useState(() => {
     const salvos = localStorage.getItem('facilita_produtos');
     if (salvos) {
@@ -38,7 +80,7 @@ export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }
   const formatarData = (data: string) => {
     if(!data.includes('-')) return data;
     const [ano, mes, dia] = data.split('-');
-    return `${dia}/${dia}/${dia}`
+    return `${dia}/${mes}/${ano}`; // CORRIGIDO: dia, mes, ano!
   }
 
   const handleDelete = (idParaExcluir: number) => {
@@ -46,7 +88,7 @@ export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }
     if (temCerteza) {
       setProducts((prev) => prev.filter((p) => p.id !== idParaExcluir));
 
-      const salvos = JSON.parse(localStorage.getItem('facilita-produtos') || '[]');
+      const salvos = JSON.parse(localStorage.getItem('facilita_produtos') || '[]');
       const novaLista = salvos.filter((p: Product) => p.id !== idParaExcluir);
       localStorage.setItem('facilita_produtos', JSON.stringify(novaLista));
     }
@@ -118,7 +160,9 @@ export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }
                 <div className="flex items-start justify-between gap-2 mb-1.5">
                   <p className="text-sm font-bold text-gray-800 leading-tight">{product.name}</p>
                   <div className="flex gap-1 shrink-0">
-                    <button className="w-7 h-7 flex items-center justify-center rounded-lg text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition-colors">
+                    <button
+                    onClick={() => abrirEditor(product)} 
+                    className="w-7 h-7 flex items-center justify-center rounded-lg text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition-colors">
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
@@ -166,6 +210,74 @@ export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
             <p className="text-sm font-medium">Nenhum produto encontrado</p>
+          </div>
+        )}
+
+        {editingProduct && (
+          <div className="fixed inset-0 z-50 flex justify-center">
+            <div
+              className="absolute inset-0 w-full bg-black/40 max-w-[430px] mx-auto"
+              onClick={() => setEditingProduct(null)}
+            ></div>
+
+            <div className="absolute bottom-0 w-full max-w-[430px] bg-white rounded-t-3xl p-5 pb-10 shadow-2xl animate-slide-up">
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                  <h3 className="font-bold text-gray-800 text-lg">Atualiza Produto</h3>
+                  <p className="text-sm font-medium text-blue-600">{editingProduct.name}</p>
+                </div>
+                <button onClick={() => setEditingProduct(null)} className="p-2 bg-gray-100 text-gray-500 rounded-full">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+
+              <form action={salvarEdicao} className="flex flex-col gap-4">
+              
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-1">Novo Preço Unitário (R$)</label>
+                  <input 
+                    type="number" step="0.01" min="0.01" name="price"
+                    defaultValue={editingProduct.price}
+                    className="w-full h-12 px-4 border border-gray-200 rounded-xl text-base focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+
+                <div className="flex gap-3">
+                  <div className="flex-1">
+                    <label className="block text-sm font-bold text-gray-700 mb-1">Estoque Atual</label>
+                    <div className="w-full h-12 px-4 bg-gray-100 border border-gray-200 rounded-xl text-base flex items-center text-gray-500 font-semibold cursor-not-allowed">
+                      {editingProduct.quantity} un.
+                    </div>
+                  </div>
+
+                  <div className="flex-1">
+                    <label className="block text-sm font-bold text-blue-600 mb-1">+ Adicionar</label>
+                    <input 
+                      type="number" min="0" placeholder="0" name="addQty"
+                      className="w-full h-12 px-4 border-2 border-blue-100 bg-blue-50 rounded-xl text-base font-bold text-blue-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-1">Nova Validade</label>
+                  <input 
+                    type="date" name="expiry"
+                    defaultValue={validadeFixed}
+                    className="w-full h-12 px-4 border border-gray-200 rounded-xl text-base focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+
+                <button type="submit" className="w-full h-12 mt-2 font-bold text-white bg-blue-600 rounded-xl hover:bg-blue-700 active:bg-blue-800 transition-colors">
+                  Salvar Alterações
+                </button>
+              </form>
+            </div>
           </div>
         )}
       </div>

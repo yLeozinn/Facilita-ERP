@@ -1,6 +1,6 @@
 # Facilita
 
-**Facilita** é um aplicativo web (PWA-style) focado em **gestão ágil para Microempreendedores Individuais (MEIs) e vendedores informais**. O projeto adota uma arquitetura *mobile-first*, garantindo que a rotina de vendas, controle de fiados e gestão de estoque possa ser feita inteiramente na palma da mão, com uma interface fluida e amigável.
+**Facilita** é um aplicativo web focado em **gestão ágil para Microempreendedores Individuais (MEIs) e vendedores informais**. O projeto adota uma arquitetura *mobile-first*, garantindo que a rotina de vendas, controle de parcelamentos e gestão de estoque possa ser feita inteiramente na palma da mão, com uma interface fluida e amigável.
 
 Este repositório contém o código-fonte do *frontend* do projeto, desenvolvido como **Projeto de Extensão Universitária** do curso de Ciência da Computação.
 
@@ -14,7 +14,7 @@ Através de uma interface que imita aplicativos nativos de celular, o usuário p
 
 * **Meu Estoque:** Cadastro, edição rápida e exclusão de produtos.
 * **Nova Venda (PDV):** Registro ágil de saídas e cálculo de carrinho.
-* **Caderneta (Fiados):** Controle de clientes que compram para pagar depois.
+* **Caderneta (Parcelamentos):** Controle de clientes que compram para pagar depois.
 * **Despesas:** Registro de custos operacionais do dia a dia.
 * **Resumo do Dia:** Dashboard simplificado com lucros e movimentações.
 
@@ -25,7 +25,7 @@ Através de uma interface que imita aplicativos nativos de celular, o usuário p
 * **React 19:** Utilizando os padrões mais recentes, incluindo *Form Actions* e componentes funcionais modernos (sem dependência de APIs obsoletas).
 * **Vite:** Ferramenta de *build* super rápida para uma experiência de desenvolvimento fluida.
 * **TypeScript:** Tipagem estática para maior segurança e redução de bugs no código.
-* **Tailwind CSS:** Estilização utilitária para construção de interfaces responsivas e personalizadas (*mobile-first* com limitação de `max-w-[430px]`).
+* **Tailwind CSS:** Estilização utilitária para construção de interfaces responsivas e personalizadas (*mobile-first*).
 
 ### Armazenamento e Persistência
 
@@ -36,7 +36,7 @@ Através de uma interface que imita aplicativos nativos de celular, o usuário p
 
 Este projeto é desenvolvido no contexto de Extensão Universitária.
 
-* **Desenvolvedor:** Leonardo (Graduando em Ciência da Computação)
-* **Orientação Acadêmica:** Profa. Adria Lyra
+* **Desenvolvedores:** Leonardo, Luiz, João Lucas e Ana Beatriz 
+* **Orientação Acadêmica:** Profa. Dra. Adria Lyra
 
 *Feito com dedicação para facilitar o pequeno comércio brasileiro.*

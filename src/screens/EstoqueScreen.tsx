@@ -11,15 +11,6 @@ type Product = {
   strokeColor: string
 }
 
-// amostra de itens na tela de estoque, posteriormente será removido.
-const PRODUCTS: Product[] = [
-  { id: 1, name: 'Suco de Laranja Natural', category: 'Bebidas', quantity: 48, expiry: '22/12/2026', price: 8.9, bgColor: '#FFF7ED', strokeColor: '#F97316' },
-  { id: 2, name: 'Água Mineral 500ml', category: 'Bebidas', quantity: 120, expiry: '15/06/2027', price: 2.5, bgColor: '#EFF6FF', strokeColor: '#3B82F6' },
-  { id: 3, name: 'Pão de Forma Integral', category: 'Padaria', quantity: 15, expiry: '20/09/2026', price: 7.9, bgColor: '#FEFCE8', strokeColor: '#EAB308' },
-  { id: 4, name: 'Queijo Mussarela', category: 'Laticínios', quantity: 8, expiry: '28/09/2026', price: 45.0, bgColor: '#F0FDF4', strokeColor: '#22C55E' },
-  { id: 5, name: 'Café Solúvel Premium', category: 'Mercearia', quantity: 32, expiry: '10/03/2027', price: 18.5, bgColor: '#FAF5FF', strokeColor: '#A855F7' },
-]
-
 function fmt(n: number) {
   return `R$ ${n.toFixed(2).replace('.', ',')}`
 }
@@ -39,7 +30,7 @@ export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }
     const qtdAdicional = Number(formData.get('addQty') || 0);
     const novaValidade = String(formData.get('expiry'));
 
-    setProducts((prev) => prev.map((p) => {
+    setProducts((prev: Product[]) => prev.map((p: Product) => {
       if (p.id === editingProduct.id) {
         return {
           ...p,
@@ -70,23 +61,22 @@ export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }
   const [products, setProducts] = useState(() => {
     const salvos = localStorage.getItem('facilita_produtos');
     if (salvos) {
-      const produtosDoNavegador = JSON.parse(salvos);
-      return [...PRODUCTS, ...produtosDoNavegador];
+      return JSON.parse(salvos);
     }
-    return PRODUCTS;
+    return [];
   });
 
   // função que formata "aaaa-mm-dd" em "dd/mm/aaaa"
   const formatarData = (data: string) => {
     if(!data.includes('-')) return data;
     const [ano, mes, dia] = data.split('-');
-    return `${dia}/${mes}/${ano}`; // CORRIGIDO: dia, mes, ano!
+    return `${dia}/${mes}/${ano}`; 
   }
 
   const handleDelete = (idParaExcluir: number) => {
     const temCerteza = window.confirm('Tem certeza de que quer excluir esse produto? Essa ação não pode ser desfeita.');
     if (temCerteza) {
-      setProducts((prev) => prev.filter((p) => p.id !== idParaExcluir));
+      setProducts((prev: Product[]) => prev.filter((p: Product) => p.id !== idParaExcluir));
 
       const salvos = JSON.parse(localStorage.getItem('facilita_produtos') || '[]');
       const novaLista = salvos.filter((p: Product) => p.id !== idParaExcluir);
@@ -95,7 +85,7 @@ export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }
   };
 
   const filtered = products.filter(
-    (p) =>
+    (p: Product) =>
       p.name.toLowerCase().includes(search.toLowerCase()) ||
       p.category.toLowerCase().includes(search.toLowerCase())
   )
@@ -140,7 +130,7 @@ export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }
 
       {/* Product list */}
       <div className="space-y-2.5">
-        {filtered.map((product) => (
+        {filtered.map((product: Product) => (
           <div key={product.id} className="bg-white border border-gray-100 rounded-2xl p-3 shadow-sm">
             <div className="flex gap-3 items-start">
               {/* Image placeholder */}

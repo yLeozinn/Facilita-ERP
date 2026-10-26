@@ -4,12 +4,12 @@ type Product = {
    id: number;
    name: string; 
    price: number; 
-   category: string 
+   category: string;
    quantity: number;
    expiry: string;
    bgColor: string;
    strokeColor: string;
-  }
+}
 type CartItem = Product & { cartQty: number }
 type PayMethod = 'credito' | 'debito' | 'dinheiro'
 
@@ -47,7 +47,7 @@ export default function PontoDeVendaScreen() {
           alert(`Atenção: Você só tem ${product.quantity} unidades de "${product.name}" no estoque.`);
           return prev;
         } 
-        return prev.map((x) => (x.id === product.id ? { ...x, quantity: x.quantity + 1 } : x))
+        return prev.map((x) => (x.id === product.id ? { ...x, cartQty: x.cartQty + 1 } : x))
       }
       return [...prev, { ...product, cartQty: 1 }]
     })
@@ -67,7 +67,7 @@ export default function PontoDeVendaScreen() {
           }
           return x;
         })
-        .filter((x) => x.quantity > 0)
+        .filter((x) => x.cartQty > 0)
     )
   }
 
@@ -89,10 +89,10 @@ const finalizarVenda = () => {
   setDone(true);
 }
 
-  const subtotal = cart.reduce((s, x) => s + x.price * x.quantity, 0)
+  const subtotal = cart.reduce((s, x) => s + x.price * x.cartQty, 0)
   const disc = parseFloat(discount.replace(',', '.')) || 0
   const total = Math.max(0, subtotal - disc)
-  const totalItems = cart.reduce((s, x) => s + x.quantity, 0)
+  const totalItems = cart.reduce((s, x) => s + x.cartQty, 0)
 
   if (done) {
     const methodLabel = payMethod === 'credito' ? 'Crédito' : payMethod === 'debito' ? 'Débito' : 'Dinheiro'
@@ -203,7 +203,7 @@ const finalizarVenda = () => {
                       <line x1="5" y1="12" x2="19" y2="12" />
                     </svg>
                   </button>
-                  <span className="text-sm font-bold text-gray-800 w-5 text-center">{item.quantity}</span>
+                  <span className="text-sm font-bold text-gray-800 w-5 text-center">{item.cartQty}</span>
                   <button
                     onClick={() => changeQty(item.id, 1)}
                     className="w-7 h-7 flex items-center justify-center rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
@@ -215,7 +215,7 @@ const finalizarVenda = () => {
                   </button>
                 </div>
                 <span className="text-sm font-bold text-blue-600 min-w-[56px] text-right">
-                  {fmt(item.price * item.quantity)}
+                  {fmt(item.price * item.cartQty)}
                 </span>
               </div>
             ))}

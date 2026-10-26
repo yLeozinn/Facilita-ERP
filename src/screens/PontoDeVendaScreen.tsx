@@ -1,22 +1,17 @@
 import { useState } from 'react'
 
-type Product = { id: number; name: string; price: number; category: string }
-type CartItem = Product & { quantity: number }
+type Product = {
+   id: number;
+   name: string; 
+   price: number; 
+   category: string 
+   quantity: number;
+   expiry: string;
+   bgColor: string;
+   strokeColor: string;
+  }
+type CartItem = Product & { cartQty: number }
 type PayMethod = 'credito' | 'debito' | 'dinheiro'
-
-const AVAILABLE: Product[] = [
-  { id: 1, name: 'Suco de Laranja', price: 8.9, category: 'Bebidas' },
-  { id: 2, name: 'Água Mineral', price: 2.5, category: 'Bebidas' },
-  { id: 3, name: 'Café Espresso', price: 5.5, category: 'Bebidas' },
-  { id: 4, name: 'Pão de Queijo', price: 4.0, category: 'Padaria' },
-  { id: 5, name: 'Sanduíche Natural', price: 12.9, category: 'Alimentação' },
-  { id: 6, name: 'Yogurte Grego', price: 7.5, category: 'Laticínios' },
-]
-
-const INITIAL_CART: CartItem[] = [
-  { id: 1, name: 'Suco de Laranja', price: 8.9, category: 'Bebidas', quantity: 2 },
-  { id: 3, name: 'Café Espresso', price: 5.5, category: 'Bebidas', quantity: 1 },
-]
 
 const PAYMENT_METHODS: { id: PayMethod; label: string }[] = [
   { id: 'credito', label: 'Crédito' },
@@ -30,30 +25,69 @@ function fmt(n: number) {
 
 export default function PontoDeVendaScreen() {
   const [search, setSearch] = useState('')
-  const [cart, setCart] = useState<CartItem[]>(INITIAL_CART)
+  const [cart, setCart] = useState<CartItem[]>([])
   const [payMethod, setPayMethod] = useState<PayMethod>('debito')
   const [discount, setDiscount] = useState('')
   const [done, setDone] = useState(false)
 
-  const visible = AVAILABLE.filter((p) =>
+  const [availableProducts, setAvailableProducts] = useState<Product[]>(() => {
+    const salvos = localStorage.getItem('facilita_produtos');
+    return salvos ? JSON.parse(salvos) : [];
+  })
+
+  const visible = availableProducts.filter((p) =>
     p.name.toLowerCase().includes(search.toLowerCase())
   )
 
   const addItem = (product: Product) => {
     setCart((prev) => {
       const found = prev.find((x) => x.id === product.id)
-      if (found) return prev.map((x) => (x.id === product.id ? { ...x, quantity: x.quantity + 1 } : x))
-      return [...prev, { ...product, quantity: 1 }]
+      if (found){
+        if (found.cartQty >= product.quantity){
+          alert(`Atenção: Você só tem ${product.quantity} unidades de "${product.name}" no estoque.`);
+          return prev;
+        } 
+        return prev.map((x) => (x.id === product.id ? { ...x, quantity: x.quantity + 1 } : x))
+      }
+      return [...prev, { ...product, cartQty: 1 }]
     })
   }
 
   const changeQty = (id: number, delta: number) => {
     setCart((prev) =>
       prev
-        .map((x) => (x.id === id ? { ...x, quantity: x.quantity + delta } : x))
+        .map((x) => {
+          if (x.id === id) {
+            const newQty = x.cartQty + delta;
+            if (newQty > x.quantity) {
+              alert(`Estoque insuficiente! Máximo de ${x.quantity} unidades disponíveis.`);
+              return x;
+            }
+            return { ...x, cartQty: newQty};
+          }
+          return x;
+        })
         .filter((x) => x.quantity > 0)
     )
   }
+
+const finalizarVenda = () => {
+  if (cart.length === 0) return;
+
+  const salvos = JSON.parse(localStorage.getItem('facilita_produtos') || '[]');
+
+  const estoqueAtualizado = salvos.map((p: Product) => {
+    const itemNoCarrinho = cart.find(c => c.id === p.id);
+    if (itemNoCarrinho) {
+      return { ...p, quantity: p.quantity - itemNoCarrinho.cartQty };
+    }
+    return p;
+  });
+
+  localStorage.setItem('facilita_produtos', JSON.stringify(estoqueAtualizado));
+  setAvailableProducts(estoqueAtualizado);
+  setDone(true);
+}
 
   const subtotal = cart.reduce((s, x) => s + x.price * x.quantity, 0)
   const disc = parseFloat(discount.replace(',', '.')) || 0

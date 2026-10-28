@@ -34,7 +34,7 @@ export default function App() {
   const isSecondaryScreen = telasSecundarias.includes(screen)
 
   return (
-    <div className="h-screen bg-slate-100 dark:bg-gray-950 flex justify-center overflow-hidden">
+    <div className="fixed inset-0 bg-slate-100 dark:bg-gray-950 flex justify-center overflow-hidden">
       <div className="w-full max-w-[430px] h-full flex flex-col bg-white dark:bg-gray-900 overflow-hidden shadow-2xl">
         <TopBar title={TITLES[screen]}
          onNavigate={(s) => setScreen(s as Screen)}

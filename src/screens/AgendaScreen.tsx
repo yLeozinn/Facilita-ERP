@@ -29,26 +29,42 @@ const DAY_NAMES = [
 ]
 
 export default function AgendaScreen() {
-  const [viewYear, setViewYear] = useState(new Date().getFullYear())
-  const [viewMonth, setViewMonth] = useState(new Date().getMonth())
-  const [selectedDay, setSelectedDay] = useState(new Date().getDate())
+  const systemToday = new Date()
+  const [viewYear, setViewYear] = useState(systemToday.getFullYear())
+  const [viewMonth, setViewMonth] = useState(systemToday.getMonth())
+  const [selectedDay, setSelectedDay] = useState<number | null>(systemToday.getDate())
 
   const firstDayOfWeek = new Date(viewYear, viewMonth, 1).getDay()
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate()
 
   const goPrev = () => {
-    if (viewMonth === 0) { setViewMonth(11); setViewYear(viewYear - 1) }
-    else setViewMonth(viewMonth - 1)
-    setSelectedDay(1)
+    const nextM = viewMonth === 0 ? 11 : viewMonth - 1
+    const nextY = viewMonth === 0 ? viewYear - 1 : viewYear
+    
+    setViewMonth(nextM)
+    setViewYear(nextY)
+
+    if (nextM === systemToday.getMonth() && nextY === systemToday.getFullYear()) {
+      setSelectedDay(systemToday.getDate())
+    } else {
+      setSelectedDay(null)
+    }
   }
 
   const goNext = () => {
-    if (viewMonth === 11) { setViewMonth(0); setViewYear(viewYear + 1) }
-    else setViewMonth(viewMonth + 1)
-    setSelectedDay(1)
+    const nextM = viewMonth === 11 ? 0 : viewMonth + 1
+    const nextY = viewMonth === 11 ? viewYear + 1 : viewYear
+    
+    setViewMonth(nextM)
+    setViewYear(nextY)
+
+    if (nextM === systemToday.getMonth() && nextY === systemToday.getFullYear()) {
+      setSelectedDay(systemToday.getDate())
+    } else {
+      setSelectedDay(null)
+    }
   }
 
-  const systemToday = new Date()
   const isCurrentMonth = viewYear === systemToday.getFullYear() && viewMonth === systemToday.getMonth()
 
   const cells: (number | null)[] = []
@@ -56,10 +72,11 @@ export default function AgendaScreen() {
   for (let d = 1; d <= daysInMonth; d++) cells.push(d)
   while (cells.length % 7 !== 0) cells.push(null)
 
-  const events = isCurrentMonth ? (EVENTS[selectedDay] ?? []) : []
+  const events = (isCurrentMonth && selectedDay) ? (EVENTS[selectedDay] ?? []) : []
 
-  const selectedDate = new Date(viewYear, viewMonth, selectedDay)
-  const dayLabel = `${DAY_NAMES[selectedDate.getDay()]}, ${selectedDay} de ${MONTH_NAMES[viewMonth].toLowerCase()}`
+  const dayLabel = selectedDay 
+  ? `${DAY_NAMES[new Date(viewYear, viewMonth, selectedDay).getDay()]}, ${selectedDay} de ${MONTH_NAMES[viewMonth].toLowerCase()}`
+  : 'Nenhum dia selecionado'
 
   return (
     <div className="p-4 space-y-4">
@@ -110,22 +127,21 @@ export default function AgendaScreen() {
               >
                 <div
                   className={`w-8 h-8 flex items-center justify-center rounded-full text-xs transition-all ${
-                      isCurrentMonth && day === selectedDay 
+                     day === selectedDay 
                       ? 'bg-blue-600 text-white font-bold shadow-sm'
                       : isCurrentMonth && day === systemToday.getDate()
                       ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-bold'
-                      : 'bg-transparent text-gray-700 dark:text-gray-300 font-normal hover:bg-gray-100 dark:hover:bg-gray-700'
+                      : 'bg-transparent text-gray-700 dark:text-gray-300 font-normal hover:bg-gray-100 dark:hover:bg-gray700'
                   }`}
                 >
                   {day}
                 </div>
                 {isCurrentMonth && Boolean(EVENTS[day]) && (
                   <div
-                    className="w-1 h-1 rounded-full mt-0.5"
-                    style={{
-                      backgroundColor:
-                        day === selectedDay ? '#93C5FD' : '#2563EB',
-                    }}
+                    className={`w-1 h-1 rounded-full mt-0.5 ${
+                      day === selectedDay ? 'bg-blue-300' : 'bg-blue-600'
+                    }`}
+
                   />
                 )}
               </button>

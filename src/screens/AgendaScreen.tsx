@@ -28,12 +28,10 @@ const DAY_NAMES = [
   'quinta-feira', 'sexta-feira', 'sábado',
 ]
 
-const TODAY = { year: 2026, month: 8, day: 16 }
-
 export default function AgendaScreen() {
-  const [viewYear, setViewYear] = useState(2026)
-  const [viewMonth, setViewMonth] = useState(8)
-  const [selectedDay, setSelectedDay] = useState(16)
+  const [viewYear, setViewYear] = useState(new Date().getFullYear())
+  const [viewMonth, setViewMonth] = useState(new Date().getMonth())
+  const [selectedDay, setSelectedDay] = useState(new Date().getDate())
 
   const firstDayOfWeek = new Date(viewYear, viewMonth, 1).getDay()
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate()
@@ -50,7 +48,8 @@ export default function AgendaScreen() {
     setSelectedDay(1)
   }
 
-  const isCurrentMonth = viewYear === TODAY.year && viewMonth === TODAY.month
+  const systemToday = new Date()
+  const isCurrentMonth = viewYear === systemToday.getFullYear() && viewMonth === systemToday.getMonth()
 
   const cells: (number | null)[] = []
   for (let i = 0; i < firstDayOfWeek; i++) cells.push(null)
@@ -65,7 +64,7 @@ export default function AgendaScreen() {
   return (
     <div className="p-4 space-y-4">
       {/* Calendar card */}
-      <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+      <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-600 rounded-2xl p-4 shadow-sm">
         {/* Month nav */}
         <div className="flex items-center justify-between mb-4">
           <button
@@ -76,7 +75,7 @@ export default function AgendaScreen() {
               <polyline points="15 18 9 12 15 6" />
             </svg>
           </button>
-          <h2 className="text-sm font-bold text-gray-800">
+          <h2 className="text-sm font-bold text-gray-800 dark:text-gray-200">
             {MONTH_NAMES[viewMonth]} {viewYear}
           </h2>
           <button
@@ -92,7 +91,7 @@ export default function AgendaScreen() {
         {/* Weekday headers */}
         <div className="grid grid-cols-7 mb-1">
           {WEEK_SHORT.map((d) => (
-            <div key={d} className="text-center text-[10px] font-bold text-gray-400 py-1">
+            <div key={d} className="text-center text-[10px] font-bold text-gray-400 dark:text-gray-200 py-1">
               {d}
             </div>
           ))}
@@ -110,25 +109,13 @@ export default function AgendaScreen() {
                 className="flex flex-col items-center pt-0.5 pb-1"
               >
                 <div
-                  className="w-8 h-8 flex items-center justify-center rounded-full text-xs transition-all"
-                  style={{
-                    backgroundColor:
-                      isCurrentMonth && day === selectedDay
-                        ? '#2563EB'
-                        : isCurrentMonth && day === TODAY.day && day !== selectedDay
-                        ? '#EFF6FF'
-                        : 'transparent',
-                    color:
-                      isCurrentMonth && day === selectedDay
-                        ? 'white'
-                        : isCurrentMonth && day === TODAY.day
-                        ? '#2563EB'
-                        : '#374151',
-                    fontWeight:
-                      (isCurrentMonth && day === TODAY.day) || (isCurrentMonth && day === selectedDay)
-                        ? '700'
-                        : '400',
-                  }}
+                  className={`w-8 h-8 flex items-center justify-center rounded-full text-xs transition-all ${
+                      isCurrentMonth && day === selectedDay 
+                      ? 'bg-blue-600 text-white font-bold shadow-sm'
+                      : isCurrentMonth && day === systemToday.getDate()
+                      ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-bold'
+                      : 'bg-transparent text-gray-700 dark:text-gray-300 font-normal hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
                 >
                   {day}
                 </div>
@@ -150,8 +137,8 @@ export default function AgendaScreen() {
       {/* Date header + add button */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-[11px] text-gray-400 capitalize">{dayLabel}</p>
-          <p className="text-sm font-bold text-gray-800 mt-0.5">
+          <p className="text-[11px] text-gray-400 dark:text-gray-200 capitalize">{dayLabel}</p>
+          <p className="text-sm font-bold text-gray-800 dark:text-gray-400 mt-0.5">
             {events.length > 0
               ? `${events.length} evento${events.length > 1 ? 's' : ''}`
               : 'Nenhum evento'}
@@ -172,16 +159,16 @@ export default function AgendaScreen() {
           {events.map((event) => (
             <div
               key={event.id}
-              className="bg-white border border-gray-100 rounded-2xl p-3.5 shadow-sm flex gap-3"
+              className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-600 rounded-2xl p-3.5 shadow-sm flex gap-3"
             >
               <div className="flex flex-col items-center pt-1 gap-1">
                 <div className="w-2 h-2 rounded-full bg-blue-600 shrink-0" />
-                <div className="w-0.5 flex-1 bg-blue-100 rounded-full" />
+                <div className="w-0.5 flex-1 bg-blue-100 dark:bg-blue-300 rounded-full" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2 mb-1">
-                  <p className="text-sm font-bold text-gray-800">{event.title}</p>
-                  <div className="flex items-center gap-1 shrink-0 text-blue-600">
+                  <p className="text-sm font-bold text-gray-800 dark:text-gray-200">{event.title}</p>
+                  <div className="flex items-center gap-1 shrink-0 text-blue-600 dark:text-blue-600">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <circle cx="12" cy="12" r="10" />
                       <polyline points="12 6 12 12 16 14" />

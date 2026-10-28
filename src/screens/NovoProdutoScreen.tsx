@@ -8,7 +8,7 @@ export default function NovoProdutoScreen() {
     });
 
     return (
-    <div className="flex flex-col h-full bg-white p-4">
+    <div className="flex flex-col h-full bg-white dark:bg-gray-900 p-4 transition-colors duration-300">
       
       {estado.mensagem && (
         <div className={`mb-5 p-3.5 rounded-xl text-sm font-medium ${estado.sucesso ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
@@ -18,11 +18,11 @@ export default function NovoProdutoScreen() {
       
       <form action={actionFormulario} className="flex flex-col gap-5 pb-24">
         <div>
-          <label className="block text-sm font-bold text-gray-700 mb-1.5 pl-1">Nome do Produto</label>
+          <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5 pl-1">Nome do Produto</label>
           <input 
             type="text" 
             name="name"
-            className="w-full h-12 px-4 bg-white border border-gray-200 rounded-xl text-base text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors disabled:bg-gray-50"
+            className="w-full h-12 px-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-base text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors disabled:bg-gray-50 dark:disabled:bg-gray-800/50"
             placeholder="Ex: Piraquê Chocowafer 100,8 g"
             disabled={isPending}
             required
@@ -31,11 +31,11 @@ export default function NovoProdutoScreen() {
 
         <div className="flex gap-3">
           <div className="flex-[3]">
-            <label className="block text-sm font-bold text-gray-700 mb-1.5 pl-1">Categoria</label>
+            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5 pl-1">Categoria</label>
             <input
               type="text"
               name="category"
-              className="w-full h-12 px-4 bg-white border border-gray-200 rounded-xl text-base text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors disabled:bg-gray-50"
+              className="w-full h-12 px-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-base text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors disabled:bg-gray-50 dark:disabled:bg-gray-800/50"
               placeholder="Ex: Bebidas"
               disabled={isPending}
               required
@@ -43,11 +43,11 @@ export default function NovoProdutoScreen() {
           </div>
 
           <div className="flex-[4]">
-            <label className="block text-sm font-bold text=gray-700 mb-1.5 pl-1">Data de Validade</label>
+            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5 pl-1">Data de Validade</label>
             <input
               type="date"
               name="expiry"
-              className="w-full h-12 px-4 bg-white border border-gray-200 rounded-xl text-base text-gray-800 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors disabled:bg-gray-50"
+              className="w-full h-12 px-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-base text-gray-800 dark:text-gray-100 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors disabled:bg-gray-50 dark:disabled:bg-gray-800/50 dark:[color-scheme:dark]"
               disabled={isPending}
               required
             />
@@ -56,13 +56,13 @@ export default function NovoProdutoScreen() {
         
         <div className="flex gap-3">
           <div className="flex-1">
-            <label className="block text-sm font-bold text-gray-700 mb-1.5 pl-1">Preço (R$)</label>
+            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5 pl-1">Preço (R$)</label>
             <input 
               type="number" 
               step="0.01"
               min="0.00"
               name="price"
-              className="w-full h-12 px-4 bg-white border border-gray-200 rounded-xl text-base text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors disabled:bg-gray-50"
+              className="w-full h-12 px-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-base text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors disabled:bg-gray-50 dark:disabled:bg-gray-800/50"
               placeholder="0.00"
               disabled={isPending}
               required
@@ -70,12 +70,12 @@ export default function NovoProdutoScreen() {
           </div>
           
           <div className="flex-1">
-            <label className="block text-sm font-bold text-gray-700 mb-1.5 pl-1">Estoque Inicial</label>
+            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5 pl-1">Estoque Inicial</label>
             <input 
               type="number" 
               min="0.00"
               name="quantity"
-              className="w-full h-12 px-4 bg-white border border-gray-200 rounded-xl text-base text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors disabled:bg-gray-50"
+              className="w-full h-12 px-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-base text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors disabled:bg-gray-50 dark:disabled:bg-gray-800/50"
               placeholder="0"
               disabled={isPending}
               required
@@ -86,7 +86,7 @@ export default function NovoProdutoScreen() {
         <button 
           type="submit" 
           disabled={isPending}
-          className="w-full h-12 mt-2 flex items-center justify-center text-sm font-bold text-white bg-blue-600 rounded-xl hover:bg-blue-700 active:bg-blue-800 transition-colors disabled:bg-blue-400 disabled:cursor-not-allowed"
+          className="w-full h-12 mt-2 flex items-center justify-center text-sm font-bold text-white bg-blue-600 dark:bg-blue-500 rounded-xl hover:bg-blue-700 dark:hover:bg-blue-600 active:bg-blue-800 transition-colors disabled:bg-blue-400 dark:disabled:bg-blue-900/50 disabled:cursor-not-allowed shadow-sm"
         >
           {isPending ? (
             <span className="flex items-center gap-2">

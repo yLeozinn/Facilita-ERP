@@ -8,11 +8,11 @@ interface BottomNavProps {
 export default function BottomNav({ active, onChange }: BottomNavProps) {
   const cls = (id: Screen) =>
     `flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 transition-colors ${
-      active === id ? 'text-blue-600' : 'text-gray-400'
+      active === id ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300'
     }`
 
   return (
-    <nav className="flex bg-white border-t border-gray-100 shrink-0">
+    <nav className="flex bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 shrink-0 transition-colors duration-300">
       <button className={cls('estoque')} onClick={() => onChange('estoque')}>
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />

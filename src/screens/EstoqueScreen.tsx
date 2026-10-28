@@ -91,11 +91,11 @@ export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }
   )
 
   return (
-    <div className="p-4 space-y-3">
+    <div className="p-4 space-y-3 min-h-screen bg-gray-50/50 dark:bg-gray-900 transition-colors duration-300">
       {/* Search bar */}
       <div className="relative">
         <span className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-gray-400 dark:text-gray-500" strokeWidth="2" strokeLinecap="round">
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
@@ -105,13 +105,13 @@ export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }
           placeholder="Buscar produto ou categoria..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-9 pr-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl text-gray-700 placeholder:text-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+          className="w-full pl-9 pr-4 py-2.5 text-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-700 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
         />
       </div>
 
       {/* Action row */}
       <div className="flex gap-2">
-        <button className="flex items-center gap-1.5 px-3.5 py-2.5 text-sm font-semibold text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
+        <button className="flex items-center gap-1.5 px-3.5 py-2.5 text-sm font-semibold text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
             <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
           </svg>
@@ -131,11 +131,11 @@ export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }
       {/* Product list */}
       <div className="space-y-2.5">
         {filtered.map((product: Product) => (
-          <div key={product.id} className="bg-white border border-gray-100 rounded-2xl p-3 shadow-sm">
+          <div key={product.id} className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-3 shadow-sm transition-colors">
             <div className="flex gap-3 items-start">
               {/* Image placeholder */}
               <div
-                className="w-[52px] h-[52px] rounded-xl shrink-0 flex items-center justify-center"
+                className="w-[52px] h-[52px] rounded-xl shrink-0 flex items-center justify-center opacity-90 dark:opacity-80"
                 style={{ backgroundColor: product.bgColor }}
               >
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={product.strokeColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -148,11 +148,11 @@ export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }
               {/* Content */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2 mb-1.5">
-                  <p className="text-sm font-bold text-gray-800 leading-tight">{product.name}</p>
+                  <p className="text-sm font-bold text-gray-800 dark:text-gray-100 leading-tight">{product.name}</p>
                   <div className="flex gap-1 shrink-0">
                     <button
                     onClick={() => abrirEditor(product)} 
-                    className="w-7 h-7 flex items-center justify-center rounded-lg text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition-colors">
+                    className="w-7 h-7 flex items-center justify-center rounded-lg text-gray-400 dark:text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors">
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
@@ -160,7 +160,7 @@ export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }
                     </button>
                     <button
                       onClick={() => handleDelete(product.id)}
-                      className="w-7 h-7 flex items-center justify-center rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                      className="w-7 h-7 flex items-center justify-center rounded-lg text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-gray-700 transition-colors"
                     >
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <polyline points="3 6 5 6 21 6" />
@@ -171,21 +171,21 @@ export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
+                  <span className="text-[11px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-full">
                     {product.category}
                   </span>
-                  <span className="text-sm font-bold text-blue-600">{fmt(product.price)}</span>
+                  <span className="text-sm font-bold text-blue-600 dark:text-blue-400">{fmt(product.price)}</span>
                 </div>
 
-                <div className="flex gap-2 mt-1.5 text-[11px] text-gray-400">
+                <div className="flex gap-2 mt-1.5 text-[11px] text-gray-400 dark:text-gray-500">
                   <span>
                     Qtd:{' '}
-                    <strong className="text-gray-600 font-semibold">{product.quantity}</strong>
+                    <strong className="text-gray-600 dark:text-gray-300 font-semibold">{product.quantity}</strong>
                   </span>
-                  <span className="text-gray-200">·</span>
+                  <span className="text-gray-200 dark:text-gray-600">·</span>
                   <span>
                     Val:{' '}
-                    <strong className="text-gray-600 font-semibold">{formatarData(product.expiry)}</strong>
+                    <strong className="text-gray-600 dark:text-gray-300 font-semibold">{formatarData(product.expiry)}</strong>
                   </span>
                 </div>
               </div>
@@ -194,7 +194,7 @@ export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }
         ))}
 
         {filtered.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-10 gap-3 text-gray-300">
+          <div className="flex flex-col items-center justify-center py-10 gap-3 text-gray-300 dark:text-gray-600">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <circle cx="11" cy="11" r="8" />
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -206,17 +206,17 @@ export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }
         {editingProduct && (
           <div className="fixed inset-0 z-50 flex justify-center">
             <div
-              className="absolute inset-0 w-full bg-black/40 max-w-[430px] mx-auto"
+              className="absolute inset-0 w-full bg-black/40 dark:bg-black/60 max-w-[430px] mx-auto"
               onClick={() => setEditingProduct(null)}
             ></div>
 
-            <div className="absolute bottom-0 w-full max-w-[430px] bg-white rounded-t-3xl p-5 pb-10 shadow-2xl animate-slide-up">
+            <div className="absolute bottom-0 w-full max-w-[430px] bg-white dark:bg-gray-800 rounded-t-3xl p-5 pb-10 shadow-2xl animate-slide-up transition-colors">
               <div className="flex justify-between items-start mb-6">
                 <div>
-                  <h3 className="font-bold text-gray-800 text-lg">Atualiza Produto</h3>
-                  <p className="text-sm font-medium text-blue-600">{editingProduct.name}</p>
+                  <h3 className="font-bold text-gray-800 dark:text-gray-100 text-lg">Atualiza Produto</h3>
+                  <p className="text-sm font-medium text-blue-600 dark:text-blue-400">{editingProduct.name}</p>
                 </div>
-                <button onClick={() => setEditingProduct(null)} className="p-2 bg-gray-100 text-gray-500 rounded-full">
+                <button onClick={() => setEditingProduct(null)} className="p-2 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-300 rounded-full">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -231,39 +231,39 @@ export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }
                   <input 
                     type="number" step="0.01" min="0.01" name="price"
                     defaultValue={editingProduct.price}
-                    className="w-full h-12 px-4 border border-gray-200 rounded-xl text-base focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    className="w-full h-12 px-4 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-xl text-base text-gray-800 dark:text-gray-100 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                     required
                   />
                 </div>
 
                 <div className="flex gap-3">
                   <div className="flex-1">
-                    <label className="block text-sm font-bold text-gray-700 mb-1">Estoque Atual</label>
-                    <div className="w-full h-12 px-4 bg-gray-100 border border-gray-200 rounded-xl text-base flex items-center text-gray-500 font-semibold cursor-not-allowed">
+                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Estoque Atual</label>
+                    <div className="w-full h-12 px-4 bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl text-base flex items-center text-gray-500 dark:text-gray-400 font-semibold cursor-not-allowed">
                       {editingProduct.quantity} un.
                     </div>
                   </div>
 
                   <div className="flex-1">
-                    <label className="block text-sm font-bold text-blue-600 mb-1">+ Adicionar</label>
+                    <label className="block text-sm font-bold text-blue-600 dark:text-blue-400 mb-1">+ Adicionar</label>
                     <input 
                       type="number" min="0" placeholder="0" name="addQty"
-                      className="w-full h-12 px-4 border-2 border-blue-100 bg-blue-50 rounded-xl text-base font-bold text-blue-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                      className="w-full h-12 px-4 border-2 border-blue-100 dark:border-blue-900/50 bg-blue-50 dark:bg-blue-900/20 rounded-xl text-base font-bold text-blue-700 dark:text-blue-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">Nova Validade</label>
+                  <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Nova Validade</label>
                   <input 
                     type="date" name="expiry"
                     defaultValue={validadeFixed}
-                    className="w-full h-12 px-4 border border-gray-200 rounded-xl text-base focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    className="w-full h-12 px-4 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-xl text-base text-gray-800 dark:text-gray-100 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                     required
                   />
                 </div>
 
-                <button type="submit" className="w-full h-12 mt-2 font-bold text-white bg-blue-600 rounded-xl hover:bg-blue-700 active:bg-blue-800 transition-colors">
+                <button type="submit" className="w-full h-12 mt-2 font-bold text-white bg-blue-600 rounded-xl hover:bg-blue-700 active:bg-blue-800 transition-colorsw-full h-12 mt-2 font-bold text-white bg-blue-600 rounded-xl hover:bg-blue-700 active:bg-blue-800 transition-colors">
                   Salvar Alterações
                 </button>
               </form>

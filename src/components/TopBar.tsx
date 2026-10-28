@@ -3,9 +3,11 @@ import { useState } from 'react';
 interface TopBarProps {
   title: string;
   onNavigate?: (screen: string) => void;
+  showExitButton?: boolean;
+  onExit?: () => void;
 }
 
-export default function TopBar({ title, onNavigate }: { title: string, onNavigate?: (screen: string) => void }) {
+export default function TopBar({ title, onNavigate, showExitButton = false, onExit }: TopBarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleNav = (screen: string) => {
@@ -33,23 +35,30 @@ export default function TopBar({ title, onNavigate }: { title: string, onNavigat
         </button>
 
         <span className="text-[15px] font-bold text-gray-800 dark:text-gray-100 tracking-tight">{title}</span>
-
-        <button className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-gray-700 dark:text-gray-200">
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+        {showExitButton ? (
+          <button 
+            onClick={onExit}
+            className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-gray-700 dark:text-gray-200"
+            title="Voltar"
           >
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-            <polyline points="16 17 21 12 16 7" />
-            <line x1="21" y1="12" x2="9" y2="12" />
-          </svg>
-        </button>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+          </button>
+        ) : (
+          <div className="w-9" />
+        )}
       </header>
 
       {isMenuOpen && (

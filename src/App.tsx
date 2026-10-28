@@ -30,10 +30,17 @@ export default function App() {
     }
   }, [])
 
+  const telasSecundarias: Screen[] = ['novo_produto', 'ajustes']
+  const isSecondaryScreen = telasSecundarias.includes(screen)
+
   return (
     <div className="h-screen bg-slate-100 dark:bg-gray-950 flex justify-center overflow-hidden">
       <div className="w-full max-w-[430px] h-full flex flex-col bg-white dark:bg-gray-900 overflow-hidden shadow-2xl">
-        <TopBar title={TITLES[screen]} onNavigate={(s) => setScreen(s as Screen)} />
+        <TopBar title={TITLES[screen]}
+         onNavigate={(s) => setScreen(s as Screen)}
+         showExitButton={isSecondaryScreen}
+         onExit={() => setScreen('estoque')}
+        />
 
         <main className="flex-1 overflow-y-auto no-scrollbar bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
           {screen === 'estoque' && <EstoqueScreen onNavigate={() => setScreen('novo_produto')} />}

@@ -8,7 +8,7 @@ export default function NovoProdutoScreen() {
     });
 
     return (
-    <div className="flex flex-col h-full bg-white dark:bg-gray-900 p-4 transition-colors duration-300">
+    <div className="flex flex-col h-full bg-white dark:bg-gray-900 p-4 transition-colors duration-300 animate-fade-in">
       
       {estado.mensagem && (
         <div className={`mb-5 p-3.5 rounded-xl text-sm font-medium ${estado.sucesso ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>

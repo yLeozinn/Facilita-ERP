@@ -121,7 +121,7 @@ const finalizarVenda = () => {
   }
 
   return (
-    <div className="p-4 space-y-4 pb-6 min-h-screen bg-gray-50/50 dark:bg-gray-900 transition-colors duration-300">
+    <div className="p-4 space-y-4 pb-6 min-h-screen bg-gray-50/50 dark:bg-gray-900 transition-colors duration-300 animate-fade-in">
       {/* Produtos Disponíveis */}
       <section>
         <h2 className="text-sm font-bold text-gray-800 dark:text-gray-100 mb-2.5">Produtos Disponíveis</h2>

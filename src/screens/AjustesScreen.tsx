@@ -34,7 +34,7 @@ export default function AjustesScreen() {
     )
 
     return (
-    <div className="p-4 space-y-6 pb-8 bg-gray-50/50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
+    <div className="p-4 space-y-6 pb-8 bg-gray-50/50 dark:bg-gray-900 min-h-screen transition-colors duration-300 animate-fade-in">
       
       {/* SEÇÃO: MEU NEGÓCIO */}
       <section>

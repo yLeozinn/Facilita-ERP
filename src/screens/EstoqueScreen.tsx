@@ -91,7 +91,7 @@ export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }
   )
 
   return (
-    <div className="p-4 space-y-3 min-h-screen bg-gray-50/50 dark:bg-gray-900 transition-colors duration-300">
+    <div className="p-4 space-y-3 min-h-screen bg-gray-50/50 dark:bg-gray-900 transition-colors duration-300 animate-fade-in">
       {/* Search bar */}
       <div className="relative">
         <span className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">

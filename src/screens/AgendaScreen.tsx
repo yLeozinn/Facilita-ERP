@@ -1,20 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import NovoEventoScreen from './NovoEventoScreen'
 
-type Event = { id: number; title: string; description: string; time: string }
-
-const EVENTS: Record<number, Event[]> = {
-  16: [
-    { id: 1, title: 'Reunião com Fornecedor', description: 'Discussão de novos contratos de abastecimento', time: '09:00' },
-    { id: 2, title: 'Inventário Mensal', description: 'Contagem e atualização de produtos do estoque', time: '14:30' },
-    { id: 3, title: 'Treinamento da Equipe', description: 'Capacitação em atendimento ao cliente', time: '17:00' },
-  ],
-  20: [
-    { id: 4, title: 'Pagamento de Fornecedores', description: 'Liquidação das faturas do mês de setembro', time: '10:00' },
-  ],
-  25: [
-    { id: 5, title: 'Balanço Semanal', description: 'Revisão de vendas e estoque da semana', time: '16:00' },
-  ],
-}
+type Event = { id: string; title: string; description: string; time: string }
 
 const MONTH_NAMES = [
   'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -33,6 +20,24 @@ export default function AgendaScreen() {
   const [viewYear, setViewYear] = useState(systemToday.getFullYear())
   const [viewMonth, setViewMonth] = useState(systemToday.getMonth())
   const [selectedDay, setSelectedDay] = useState<number | null>(systemToday.getDate())
+
+  const [eventsMap, setEventsMap] = useState<Record<string, Event[]>>(() => {
+    const savedEvents = localStorage.getItem('@facilita:events')
+    if (savedEvents) {
+      try {
+        return JSON.parse(savedEvents)
+      } catch (error) {
+        return {}
+      }
+    }
+    return {}
+  })
+
+  useEffect(() => {
+    localStorage.setItem('@facilita:events', JSON.stringify(eventsMap))
+  }, [eventsMap])
+
+  const [isAddingEvent, setIsAddingEvent] = useState(false)
 
   const firstDayOfWeek = new Date(viewYear, viewMonth, 1).getDay()
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate()
@@ -72,14 +77,58 @@ export default function AgendaScreen() {
   for (let d = 1; d <= daysInMonth; d++) cells.push(d)
   while (cells.length % 7 !== 0) cells.push(null)
 
-  const events = (isCurrentMonth && selectedDay) ? (EVENTS[selectedDay] ?? []) : []
+  const selectedDateKey = `${viewYear}-${viewMonth}-${selectedDay}`
+  const events = selectedDay && eventsMap[selectedDateKey] 
+    ? [...eventsMap[selectedDateKey]].sort((a, b) => a.time.localeCompare(b.time)) 
+    : []
 
   const dayLabel = selectedDay 
   ? `${DAY_NAMES[new Date(viewYear, viewMonth, selectedDay).getDay()]}, ${selectedDay} de ${MONTH_NAMES[viewMonth].toLowerCase()}`
   : 'Nenhum dia selecionado'
 
+  if (isAddingEvent) {
+    return (
+      <NovoEventoScreen 
+        dataSelecionadaLabel={dayLabel}
+        onCancelar={() => setIsAddingEvent(false)}
+        onSalvar={(novoEvento) => {
+          // cada evento tem um unico ID
+          const eventoCompleto = { ...novoEvento, id: Date.now().toString() }
+          
+          setEventsMap(prev => ({
+            ...prev,
+            [selectedDateKey]: [...(prev[selectedDateKey] || []), eventoCompleto]
+          }))
+          
+          setIsAddingEvent(false)
+        }}
+      />
+    )
+  }
+
+  const handleDeleteEvent = (eventId: string) => {
+    if (!selectedDay) return
+
+    setEventsMap(prev => {
+      const currentEvents = prev[selectedDateKey] || []
+      const updatedEvents = currentEvents.filter(ev => ev.id !== eventId)
+
+      // se o dia ficar sem eventos, removeme a key do objeto para a bolinha sumir do calendário
+      if (updatedEvents.length === 0) {
+        const copy = { ...prev }
+        delete copy[selectedDateKey]
+        return copy
+      }
+
+      return {
+        ...prev,
+        [selectedDateKey]: updatedEvents
+      }
+    })
+  }
+
   return (
-    <div className="p-4 space-y-4">
+    <div className="p-4 space-y-4 animate-fade-in">
       {/* Calendar card */}
       <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-600 rounded-2xl p-4 shadow-sm">
         {/* Month nav */}
@@ -116,8 +165,11 @@ export default function AgendaScreen() {
 
         {/* Day grid */}
         <div className="grid grid-cols-7">
-          {cells.map((day, idx) =>
-            day === null ? (
+          {cells.map((day, idx) => {
+            const loopDateKey = `${viewYear}-${viewMonth}-${day}`
+            const hasEvents = day !== null && eventsMap[loopDateKey] && eventsMap[loopDateKey].length > 0
+
+            return day === null ? (
               <div key={`e-${idx}`} />
             ) : (
               <button
@@ -136,17 +188,16 @@ export default function AgendaScreen() {
                 >
                   {day}
                 </div>
-                {isCurrentMonth && Boolean(EVENTS[day]) && (
+                {hasEvents && (
                   <div
                     className={`w-1 h-1 rounded-full mt-0.5 ${
                       day === selectedDay ? 'bg-blue-300' : 'bg-blue-600'
                     }`}
-
                   />
                 )}
               </button>
             )
-          )}
+          })}
         </div>
       </div>
 
@@ -160,7 +211,11 @@ export default function AgendaScreen() {
               : 'Nenhum evento'}
           </p>
         </div>
-        <button className="flex items-center gap-1.5 px-3.5 py-2.5 bg-blue-600 text-white text-xs font-bold rounded-xl hover:bg-blue-700 transition-colors">
+        <button
+          onClick={() => setIsAddingEvent(true)}
+          disabled={!selectedDay} 
+          className="flex items-center gap-1.5 px-3.5 py-2.5 bg-blue-600 text-white text-xs font-bold rounded-xl hover:bg-blue-700 transition-colors"
+        >
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
@@ -184,15 +239,31 @@ export default function AgendaScreen() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2 mb-1">
                   <p className="text-sm font-bold text-gray-800 dark:text-gray-200">{event.title}</p>
-                  <div className="flex items-center gap-1 shrink-0 text-blue-600 dark:text-blue-600">
-                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="12" cy="12" r="10" />
-                      <polyline points="12 6 12 12 16 14" />
-                    </svg>
-                    <span className="text-[11px] font-bold">{event.time}</span>
+                  
+                  {/* [MUDANÇA: Horário e botão de exclusão com ícone de lixeira] */}
+                  <div className="flex items-center gap-3 shrink-0">
+                    <div className="flex items-center gap-1 text-blue-600 dark:text-blue-400">
+                      <button
+                      onClick={() => handleDeleteEvent(event.id)}
+                      className="text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors p-1"
+                      title="Excluir evento"
+                    >
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                      </svg>
+                    </button>
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                      </svg>
+                      <span className="text-[11px] font-bold">{event.time}</span>
+                    </div>
                   </div>
                 </div>
-                <p className="text-[12px] text-gray-400 leading-relaxed">{event.description}</p>
+                {event.description && (
+                  <p className="text-[12px] text-gray-400 leading-relaxed">{event.description}</p>
+                )}
               </div>
             </div>
           ))}

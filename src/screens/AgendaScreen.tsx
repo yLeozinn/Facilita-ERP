@@ -240,7 +240,7 @@ export default function AgendaScreen() {
                 <div className="flex items-start justify-between gap-2 mb-1">
                   <p className="text-sm font-bold text-gray-800 dark:text-gray-200">{event.title}</p>
                   
-                  {/* [MUDANÇA: Horário e botão de exclusão com ícone de lixeira] */}
+                  {/* Horário e botão de exclusão com ícone de lixeira */}
                   <div className="flex items-center gap-3 shrink-0">
                     <div className="flex items-center gap-1 text-blue-600 dark:text-blue-400">
                       <button

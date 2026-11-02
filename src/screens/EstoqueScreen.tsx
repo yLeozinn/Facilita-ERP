@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { buscarProdutos } from '@/services/produtoActions'
 
 type Product = {
-  id: number
+  id: string 
   name: string
   category: string
   quantity: number
@@ -18,6 +19,19 @@ function fmt(n: number) {
 export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }) {
   const [search, setSearch] = useState('')
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const carregarEstoque = async () => {
+      setIsLoading(true);
+      const dados = await buscarProdutos();
+      setProducts(dados);
+      setIsLoading(false);
+    };
+
+    carregarEstoque();
+  }, []);
 
   const abrirEditor = (product: Product) => {
     setEditingProduct(product);
@@ -42,29 +56,12 @@ export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }
       return p;
     }));
 
-    const salvos = JSON.parse(localStorage.getItem('facilita_produtos') || '[]');
-    const index = salvos.findIndex((p: Product) => p.id === editingProduct.id);
-    if (index >= 0) {
-      salvos[index].price = novoPreco;
-      salvos[index].quantity += qtdAdicional;
-      salvos[index].expiry = novaValidade;
-      localStorage.setItem('facilita_produtos', JSON.stringify(salvos));
-    }
-
     setEditingProduct(null);
   };
 
   const validadeFixed = editingProduct
     ? (editingProduct.expiry.includes('/') ? editingProduct.expiry.split('/').reverse().join('-') : editingProduct.expiry)
     : '';
-
-  const [products, setProducts] = useState(() => {
-    const salvos = localStorage.getItem('facilita_produtos');
-    if (salvos) {
-      return JSON.parse(salvos);
-    }
-    return [];
-  });
 
   // função que formata "aaaa-mm-dd" em "dd/mm/aaaa"
   const formatarData = (data: string) => {
@@ -73,14 +70,10 @@ export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }
     return `${dia}/${mes}/${ano}`; 
   }
 
-  const handleDelete = (idParaExcluir: number) => {
+  const handleDelete = (idParaExcluir: string) => {
     const temCerteza = window.confirm('Tem certeza de que quer excluir esse produto? Essa ação não pode ser desfeita.');
     if (temCerteza) {
       setProducts((prev: Product[]) => prev.filter((p: Product) => p.id !== idParaExcluir));
-
-      const salvos = JSON.parse(localStorage.getItem('facilita_produtos') || '[]');
-      const novaLista = salvos.filter((p: Product) => p.id !== idParaExcluir);
-      localStorage.setItem('facilita_produtos', JSON.stringify(novaLista));
     }
   };
 

@@ -107,3 +107,29 @@ export async function buscarProdutos() {
         return []; // retorna lista vazia em caso de erro para a tela não quebrar
     }
 }
+
+export async function deletarProduto(id: string) {
+    try {
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            throw new Error('Usuário não autenticado.');
+        }
+
+        const response = await fetch(`http://localhost:8080/api/produtos/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Falha ao excluir o produto no servidor.');
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Erro ao excluir produto:', error);
+        return false;
+    }
+}

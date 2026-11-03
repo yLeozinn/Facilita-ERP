@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { buscarProdutos } from '@/services/produtoActions'
+import { buscarProdutos, deletarProduto } from '@/services/produtoActions'
 
 type Product = {
   id: string 
@@ -70,10 +70,15 @@ export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }
     return `${dia}/${mes}/${ano}`; 
   }
 
-  const handleDelete = (idParaExcluir: string) => {
+  const handleDelete = async (idParaExcluir: string) => {
     const temCerteza = window.confirm('Tem certeza de que quer excluir esse produto? Essa ação não pode ser desfeita.');
     if (temCerteza) {
-      setProducts((prev: Product[]) => prev.filter((p: Product) => p.id !== idParaExcluir));
+      const sucesso = await deletarProduto(idParaExcluir);
+      if (sucesso) {
+        setProducts((prev: Product[]) => prev.filter((p: Product) => p.id !== idParaExcluir));
+      } else {
+        alert('Erro ao excluir o produto. Tente novamente.');
+      }
     }
   };
 

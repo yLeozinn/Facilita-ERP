@@ -133,3 +133,37 @@ export async function deletarProduto(id: string) {
         return false;
     }
 }
+
+export async function atualizarProduto(id: string, dadosAtualizados: { preco: number, quantidadeAdicional: number, dataValidade: string }) {
+    try {
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            throw new Error('Usuário não autenticado.');
+        }
+
+        const payload = {
+            preco: dadosAtualizados.preco,
+            quantidadeEstoque: dadosAtualizados.quantidadeAdicional,
+            dataValidade: dadosAtualizados.dataValidade !== '' ? dadosAtualizados.dataValidade : null
+        };
+
+        const response = await fetch(`http://localhost:8080/api/produtos/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            throw new Error('Falha ao atualizar o produto no servidor.');
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Erro ao atualizar produto:', error);
+        return false;
+    }
+}

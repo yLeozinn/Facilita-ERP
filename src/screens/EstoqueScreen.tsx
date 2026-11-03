@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { buscarProdutos, deletarProduto } from '@/services/produtoActions'
+import { buscarProdutos, deletarProduto, atualizarProduto } from '@/services/produtoActions'
 
 type Product = {
   id: string 
@@ -37,26 +37,35 @@ export default function EstoqueScreen({ onNavigate }: { onNavigate: () => void }
     setEditingProduct(product);
   };
 
-  const salvarEdicao = (formData: FormData) => {
+  const salvarEdicao = async (formData: FormData) => {
     if (!editingProduct) return;
 
     const novoPreco = Number(formData.get('price'));
     const qtdAdicional = Number(formData.get('addQty') || 0);
     const novaValidade = String(formData.get('expiry'));
 
-    setProducts((prev: Product[]) => prev.map((p: Product) => {
-      if (p.id === editingProduct.id) {
-        return {
-          ...p,
-          price: novoPreco,
-          quantity: p.quantity + qtdAdicional,
-          expiry: novaValidade
-        };
-      }
-      return p;
-    }));
+    const sucesso = await atualizarProduto(editingProduct.id, {
+      preco: novoPreco,
+      quantidadeAdicional: qtdAdicional,
+      dataValidade: novaValidade
+    });
 
-    setEditingProduct(null);
+    if (sucesso) {
+      setProducts((prev: Product[]) => prev.map((p: Product) => {
+        if (p.id === editingProduct.id) {
+          return {
+            ...p,
+            price: novoPreco,
+            quantity: p.quantity + qtdAdicional,
+            expiry: novaValidade
+          };
+        }
+        return p;
+      }));
+      setEditingProduct(null);
+    } else {
+      alert('Erro ao atualizar o produto no servidor.');
+    }
   };
 
   const validadeFixed = editingProduct

@@ -167,3 +167,31 @@ export async function atualizarProduto(id: string, dadosAtualizados: { preco: nu
         return false;
     }
 }
+
+export async function realizarVendaNoBanco(cartItems: { id: string, cartQty: number }[]) {
+        try {
+            const token = localStorage.getItem('token');
+
+            if(!token) throw new Error('Usuário não autenticado.');
+
+            const response = await fetch('http://localhost:8080/api/produtos/venda', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(cartItems)
+            });
+
+            if(!response.ok){
+                const erroTxt = await response.text();
+                throw new Error(erroTxt || 'Falha ao processar venda no servidor');
+            }
+
+            return true
+
+        } catch (error) {
+            console.error('Erro ao finalizar venda:', error);
+            return false;
+        }
+    }

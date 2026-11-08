@@ -8,6 +8,7 @@ import PontoDeVendaScreen from '../screens/PontoDeVendaScreen'
 import AgendaScreen from '../screens/AgendaScreen'
 import NovoProdutoScreen from '../screens/NovoProdutoScreen'
 import AjustesScreen from '../screens/AjustesScreen'
+import DetalhesContaScreen from '@/screens/DetalhesContaScreen'
 
 const TITLES: Record<Screen, string> = {
   estoque: 'Estoque',
@@ -16,7 +17,8 @@ const TITLES: Record<Screen, string> = {
   tarefas: 'Tarefas',
   relatorios: 'Relatórios',
   novo_produto: 'Novo Produto',
-  ajustes: 'Ajustes do App'
+  ajustes: 'Ajustes do App',
+  conta: 'Detalhes da Conta'
 }
 
 export default function ProtectedRoute() {
@@ -28,7 +30,7 @@ export default function ProtectedRoute() {
     return <Navigate to="/login" replace />
   }
 
-  const telasSecundarias: Screen[] = ['novo_produto', 'ajustes']
+  const telasSecundarias: Screen[] = ['novo_produto', 'ajustes', 'conta']
   const isSecondaryScreen = telasSecundarias.includes(screen)
 
   return (
@@ -40,13 +42,14 @@ export default function ProtectedRoute() {
          showExitButton={isSecondaryScreen}
          onExit={() => setScreen('estoque')}
         />
-
+        
         <main className="flex-1 overflow-y-auto no-scrollbar bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
           {screen === 'estoque' && <EstoqueScreen onNavigate={() => setScreen('novo_produto')} />}
           {screen === 'vendas' && <PontoDeVendaScreen />}
           {screen === 'agenda' && <AgendaScreen />}
           {screen === 'novo_produto' && <NovoProdutoScreen />}
           {screen === 'ajustes' && <AjustesScreen />}
+          {screen === 'conta' && <DetalhesContaScreen onNavigate={() => setScreen('conta')} />}
           
           {screen === 'tarefas' && (
             <div className="flex flex-col items-center justify-center h-full gap-3 text-gray-300 dark:text-gray-600">
@@ -72,7 +75,7 @@ export default function ProtectedRoute() {
           )}
         </main>
         
-        {screen !== 'ajustes' && (
+        {!isSecondaryScreen && (
           <BottomNav active={screen} onChange={setScreen} />
         )}
       </div>

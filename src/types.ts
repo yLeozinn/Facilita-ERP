@@ -1,1 +1,1 @@
-export type Screen = 'estoque' | 'vendas' | 'agenda' | 'tarefas' | 'relatorios' | 'novo_produto' | 'ajustes'
+export type Screen = 'estoque' | 'vendas' | 'agenda' | 'tarefas' | 'relatorios' | 'novo_produto' | 'ajustes' | 'conta'

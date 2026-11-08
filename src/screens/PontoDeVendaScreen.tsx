@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { buscarProdutos, realizarVendaNoBanco } from '@/services/produtoActions'
 
 type Product = {
-   id: number;
+   id: string;
    name: string; 
    price: number; 
    category: string;
@@ -30,10 +31,19 @@ export default function PontoDeVendaScreen() {
   const [discount, setDiscount] = useState('')
   const [done, setDone] = useState(false)
 
-  const [availableProducts, setAvailableProducts] = useState<Product[]>(() => {
-    const salvos = localStorage.getItem('facilita_produtos');
-    return salvos ? JSON.parse(salvos) : [];
-  })
+  const [availableProducts, setAvailableProducts] = useState<Product[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const carregarProdutosPDV = async () => {
+      setIsLoading(true);
+      const dados = await buscarProdutos();
+      setAvailableProducts(dados);
+      setIsLoading(false);
+    };
+
+    carregarProdutosPDV();
+  }, []);
 
   const visible = availableProducts.filter((p) =>
     p.name.toLowerCase().includes(search.toLowerCase())
@@ -53,7 +63,7 @@ export default function PontoDeVendaScreen() {
     })
   }
 
-  const changeQty = (id: number, delta: number) => {
+  const changeQty = (id: string, delta: number) => {
     setCart((prev) =>
       prev
         .map((x) => {
@@ -71,23 +81,33 @@ export default function PontoDeVendaScreen() {
     )
   }
 
-const finalizarVenda = () => {
-  if (cart.length === 0) return;
+const finalizarVenda = async () => {
+    if (cart.length === 0) return;
 
-  const salvos = JSON.parse(localStorage.getItem('facilita_produtos') || '[]');
+    // reserva apenas os dados essenciais (id e quantidade comprada) para o backend
+    const itensParaAbater = cart.map(item => ({
+      id: item.id,
+      cartQty: item.cartQty
+    }));
 
-  const estoqueAtualizado = salvos.map((p: Product) => {
-    const itemNoCarrinho = cart.find(c => c.id === p.id);
-    if (itemNoCarrinho) {
-      return { ...p, quantity: p.quantity - itemNoCarrinho.cartQty };
+    const sucesso = await realizarVendaNoBanco(itensParaAbater);
+
+    if (sucesso) {
+      // atualiza o estoque localmente na tela para refletir os novos valores
+      const estoqueAtualizado = availableProducts.map((p: Product) => {
+        const itemNoCarrinho = cart.find(c => c.id === p.id);
+        if (itemNoCarrinho) {
+          return { ...p, quantity: p.quantity - itemNoCarrinho.cartQty };
+        }
+        return p;
+      });
+
+      setAvailableProducts(estoqueAtualizado);
+      setDone(true);
+    } else {
+      alert('Erro ao registrar a venda no servidor. Verifique o estoque.');
     }
-    return p;
-  });
-
-  localStorage.setItem('facilita_produtos', JSON.stringify(estoqueAtualizado));
-  setAvailableProducts(estoqueAtualizado);
-  setDone(true);
-}
+  }
 
   const subtotal = cart.reduce((s, x) => s + x.price * x.cartQty, 0)
   const discPerc = parseFloat(discount.replace(',', '.')) || 0
